@@ -68,3 +68,5 @@ class DataReview:
             rotation=45,
             horizontalalignment='right'
         )
+
+        plt.savefig('corr_matrix.jpg')
