@@ -22,23 +22,31 @@ class DataReview:
         count_cols_inf = 0
         list_cols_inf = []
         for col in num_df:
-            if num_df[col].isnull().sum() > 0:
+            num_null_values = num_df[col].isnull().sum()
+            if num_null_values > 0:
+                temp_list = []
                 count_cols_nan += 1
-                list_cols_nan.append(col)
-            if np.isinf(self.features[col]).values.sum() > 0:
+                temp_list.append(col)
+                temp_list.append(num_null_values)
+                list_cols_nan.append(temp_list)
+            num_inf_values = np.isinf(self.features[col]).values.sum()
+            if num_inf_values > 0:
+                temp_list = []
                 count_cols_inf += 1
-                list_cols_inf.append(col)
+                temp_list.append(col)
+                temp_list.append(num_inf_values)
+                list_cols_inf.append(temp_list)
 
         print(f'There are {count_cols_nan} columns with at least 1 null / NaN value')
         print(f'There are {count_cols_inf} columns with at least 1 infinite value')
         if len(list_cols_nan) > 0:
             print(f'The columns with null / NaN values are:')
-            for col in list_cols_nan:
-                print(f'{col}')
+            for col_record in list_cols_nan:
+                print(f'{col_record[0]} has {col_record[1]} null values')
         if len(list_cols_inf) > 0:
             print('The columns with infinite values are:')
-            for col in list_cols_inf:
-                print(f'{col}')
+            for col_record in list_cols_inf:
+                print(f'{col_record[0]} has {col_record[1]} inf values')
 
     def hist_creator(self, save_file=False):
         num_df = self.features.select_dtypes(np.number)
