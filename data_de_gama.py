@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 class DataReview:
-    def __init__(self, features, target):
+    def __init__(self, features, target=None):
         self.features = features
         self.target = target
         self.num_feature_cols = self.features.shape[1]
