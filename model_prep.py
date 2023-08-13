@@ -21,7 +21,7 @@ class ModelPrep():
         #encoder_list = []
         #encoder_dict = {}
 
-        if col_list:
+        if col_list == None:
             for cols in self.X_train.columns:
                 if float(self.X_train[cols].nunique()) / float(self.X_train[cols].count()) < 0.1 \
                 and self.X_train[cols].nunique() < 100:
