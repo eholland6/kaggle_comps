@@ -51,17 +51,18 @@ class ModelPrep():
             categorical_features_poss_ = col_list
             handle_list_ = []
             for i in range(len(col_list)):
-                handle_list_.append(i)
+                handle_list_.append(1)
 
         one_hot_df_train = pd.DataFrame()
         one_hot_df_test = pd.DataFrame()
 
-        if categories_list:
-            categ_list = categories_list
-        else:
+        if categories_list == None:
             categ_list = []
             for i in range(len(handle_list_)):
-                categ_list.append(i)
+                categ_list.append('auto')
+            print(categ_list)
+        else:
+            categ_list = categories_list
 
         for i in range(len(categorical_features_poss_)):
             if int(handle_list_[i]) == 1:
@@ -93,3 +94,11 @@ class ModelPrep():
                 pickle.dump(enc, open(enc_file_name, 'wb'))
                 #encoder_list.append(enc_file_name)
                 #encoder_dict['one_hot_encoder_'+categorical_features_poss_[i]] = enc_file_name
+            elif int(handle_list_[i]) == 2:
+                self.X_train.drop(categorical_features_poss_[i], axis=1)
+                self.X_test.drop(categorical_features_poss_[i], axis=1)
+            else:
+                pass
+
+        self.X_train = pd.concat([self.X_train, one_hot_df_train], axis=1)
+        self.X_test = pd.concat([self.X_test, one_hot_df_train], axis=1)
