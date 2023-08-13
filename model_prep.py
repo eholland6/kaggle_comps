@@ -60,7 +60,6 @@ class ModelPrep():
             categ_list = []
             for i in range(len(handle_list_)):
                 categ_list.append('auto')
-            print(categ_list)
         else:
             categ_list = categories_list
 
