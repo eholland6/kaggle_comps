@@ -101,4 +101,4 @@ class ModelPrep():
                 pass
 
         self.X_train = pd.concat([self.X_train, one_hot_df_train], axis=1)
-        self.X_test = pd.concat([self.X_test, one_hot_df_train], axis=1)
+        self.X_test = pd.concat([self.X_test, one_hot_df_test], axis=1)
