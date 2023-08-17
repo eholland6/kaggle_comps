@@ -2,18 +2,45 @@ import pandas as pd
 import numpy as np
 
 from sklearn.model_selection import train_test_split
+from sklearn.impute import KNNImputer
 from sklearn.preprocessing import OneHotEncoder
 
 import pickle
 
 class ModelPrep():
-    def __init__(self, features, target):
+    def __init__(self, features, target, id_cols):
         self.features = features
         self.target = target
+        self.id_cols = id_cols
 
     def train_test(self):
         self.X_train, self.X_test, self.y_train, self.y_test = \
             train_test_split(self.features, self.target, test_size=.23)
+        
+    def impute_data(self, imputer_type='Mean', other_dfs=[]):
+        if imputer_type == 'Mean':
+            fill_dict = {}
+
+            for col in self.X_train:
+                num_null_values = self.X_train[col].isnull().sum()
+                if num_null_values > 0:
+                    mean_imp = self.X_train[col].mean()
+                    fill_dict[col] = mean_imp
+
+            self.X_train.fillna(value=fill_dict, inplace=True)
+            self.X_train.fillna(value=fill_dict, inplace=True)
+            for df in other_dfs:
+                df.fillna(value=fill_dict, inplace=True)
+        elif imputer_type == 'KNN':
+            imputer = KNNImputer(n_neighbors=5)
+            temp_df = self.X_train.drop(columns=self.id_cols)
+            imputer.fit(temp_df)
+            self.X_train = imputer.transform(self.X_train)
+            self.X_test = imputer.transform(self.X_test)
+
+            for df in other_dfs:
+                temp_df = imputer.transform(df)
+                return temp_df
 
     def catg_one_hot_encode(self, col_list=None, handle_unknown_setting='ignore', categories_list=None, file_name_suffix='', file_path=''):
         categorical_features_poss_ = []
