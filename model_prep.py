@@ -35,11 +35,20 @@ class ModelPrep():
             imputer = KNNImputer(n_neighbors=5)
             temp_df = self.X_train.drop(columns=self.id_cols)
             imputer.fit(temp_df)
-            self.X_train = imputer.transform(self.X_train)
-            self.X_test = imputer.transform(self.X_test)
+            temp_df = self.X_train.drop(columns=self.id_cols)
+            id_col_df = self.X_train[self.id_cols]
+            temp_df = imputer.transform(temp_df)
+            self.X_train = pd.concat([id_col_df, temp_df], axis=1)
+            temp_df = self.X_test.drop(columns=self.id_cols)
+            id_col_df = self.X_test[self.id_cols]
+            temp_df = imputer.transform(temp_df)
+            self.X_test = pd.concat([id_col_df, temp_df], axis=1)
 
             for df in other_dfs:
+                df = df.drop(columns=self.id_cols)
+                id_col_df = df[self.id_cols]
                 temp_df = imputer.transform(df)
+                temp_df = pd.concat([id_col_df, temp_df], axis=1)
                 return temp_df
 
     def catg_one_hot_encode(self, col_list=None, handle_unknown_setting='ignore', categories_list=None, file_name_suffix='', file_path=''):
